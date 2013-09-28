@@ -89,13 +89,16 @@ struct mapping trans[] = {
 char *
 translate(int c)
 {
-	/* XXX: This is not 100% correct. It places 10 dits between two
-	 * words wheres 7 dits would have been correct. */
 	size_t i;
 	for (i = 0; i < LENGTH(trans); i++)
 		if (c == trans[i].from)
 			return trans[i].to;
-	return "       ";
+
+	/* All characters end with three dits. Let's assume a space does not
+	 * appear at the beginning of a transmission (where it is useless).
+	 * Then, after those three dits, we need another four to get the
+	 * seven dits for a space. */
+	return "    ";
 }
 
 void
