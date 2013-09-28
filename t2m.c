@@ -103,7 +103,6 @@ raw_sine(int dits, double amp)
 {
 	size_t i, num_samples;
 	double len_dit, val, fade_in, fade_out;
-	double cap = 0.8;
 
 	/* WPM to "len of one dit": One "word" is 50 dits. */
 	len_dit = 60.0 / (WPM * 50);
@@ -112,7 +111,7 @@ raw_sine(int dits, double amp)
 	for (i = 0; i < num_samples; i++)
 	{
 		/* The raw sine curve. */
-		val = sin((double)i / SAMPLING_RATE * HZ * 2 * M_PI) * amp * cap;
+		val = sin((double)i / SAMPLING_RATE * HZ * 2 * M_PI) * amp;
 
 		/* Fade in at the beginning and fade out at the end. */
 		fade_in = i / (SAMPLING_RATE * 0.01);
