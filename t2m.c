@@ -11,6 +11,7 @@
 #define WPM 20
 #define HZ 1500
 #define SAMPLING_RATE 44100
+#define FADE_LENGTH 0.001
 
 struct mapping
 {
@@ -117,9 +118,9 @@ raw_sine(int dits, double amp)
 		val = sin((double)i / SAMPLING_RATE * HZ * 2 * M_PI) * amp;
 
 		/* Fade in at the beginning and fade out at the end. */
-		fade_in = i / (SAMPLING_RATE * 0.01);
+		fade_in = i / (SAMPLING_RATE * FADE_LENGTH);
 		fade_in = fade_in > 1 ? 1 : fade_in;
-		fade_out = (num_samples - i) / (SAMPLING_RATE * 0.01);
+		fade_out = (num_samples - i) / (SAMPLING_RATE * FADE_LENGTH);
 		fade_out = fade_out > 1 ? 1 : fade_out;
 
 		val *= fade_in;
