@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
+#include <unistd.h>
+#include <stdlib.h>
 
 /* Compile and run as:
  *   echo 'mkmmk mmkkmm mkm m k' | ./t2m | aplay -r 44100 -f S16_LE
@@ -8,10 +10,10 @@
 
 #define LENGTH(X) (sizeof X / sizeof X[0])
 
-#define WPM 20
-#define HZ 1500
-#define SAMPLING_RATE 44100
-#define FADE_LENGTH 0.001
+int wpm = 20;
+int hz = 1500;
+int sampling_rate = 44100;
+double fade_length = 0.001;
 
 struct mapping
 {
@@ -109,18 +111,18 @@ raw_sine(int dits, double amp)
 	double len_dit, val, fade_in, fade_out;
 
 	/* WPM to "len of one dit": One "word" is 50 dits. */
-	len_dit = 60.0 / (WPM * 50);
+	len_dit = 60.0 / (wpm * 50);
 
-	num_samples = dits * len_dit * SAMPLING_RATE;
+	num_samples = dits * len_dit * sampling_rate;
 	for (i = 0; i < num_samples; i++)
 	{
 		/* The raw sine curve. */
-		val = sin((double)i / SAMPLING_RATE * HZ * 2 * M_PI) * amp;
+		val = sin((double)i / sampling_rate * hz * 2 * M_PI) * amp;
 
 		/* Fade in at the beginning and fade out at the end. */
-		fade_in = i / (SAMPLING_RATE * FADE_LENGTH);
+		fade_in = i / (sampling_rate * fade_length);
 		fade_in = fade_in > 1 ? 1 : fade_in;
-		fade_out = (num_samples - i) / (SAMPLING_RATE * FADE_LENGTH);
+		fade_out = (num_samples - i) / (sampling_rate * fade_length);
 		fade_out = fade_out > 1 ? 1 : fade_out;
 
 		val *= fade_in;
@@ -157,10 +159,35 @@ beep(char *str)
 }
 
 int
-main()
+main(int argc, char **argv)
 {
-	int c;
+	int c, opt;
+
+	while ((opt = getopt(argc, argv, "w:h:r:f:")) != -1)
+	{
+		switch (opt)
+		{
+			case 'w':
+				wpm = atoi(optarg);
+				break;
+			case 'h':
+				hz = atoi(optarg);
+				break;
+			case 'r':
+				sampling_rate = atoi(optarg);
+				break;
+			case 'f':
+				fade_length = atof(optarg);
+				break;
+			default: /* '?' */
+				fprintf(stderr, "Usage: %s [-w WPM] [-h HZ] "
+				                "[-r SAMPLING_RATE] [-f FADE_LENGTH]\n",
+				        argv[0]);
+				exit(EXIT_FAILURE);
+		}
+	}
+
 	while ((c = getchar()) != EOF)
 		beep(translate(tolower(c)));
-	return 0;
+	exit(EXIT_SUCCESS);
 }
