@@ -10,6 +10,7 @@ int wpm = 20;
 int hz = 1500;
 int sampling_rate = 44100;
 double fade_length = 0.001;
+double volume_cap = 1;
 
 struct mapping
 {
@@ -113,7 +114,7 @@ raw_sine(int dits, double amp)
 	for (i = 0; i < num_samples; i++)
 	{
 		/* The raw sine curve. */
-		val = sin((double)i / sampling_rate * hz * 2 * M_PI) * amp;
+		val = sin((double)i / sampling_rate * hz * 2 * M_PI) * amp * volume_cap;
 
 		/* Fade in at the beginning and fade out at the end. */
 		fade_in = i / (sampling_rate * fade_length);
@@ -159,7 +160,7 @@ main(int argc, char **argv)
 {
 	int c, opt;
 
-	while ((opt = getopt(argc, argv, "w:h:r:f:")) != -1)
+	while ((opt = getopt(argc, argv, "w:h:r:f:c:")) != -1)
 	{
 		switch (opt)
 		{
@@ -175,9 +176,13 @@ main(int argc, char **argv)
 			case 'f':
 				fade_length = atof(optarg);
 				break;
+			case 'c':
+				volume_cap = atof(optarg);
+				break;
 			default: /* '?' */
 				fprintf(stderr, "Usage: %s [-w WPM] [-h HZ] "
-				                "[-r SAMPLING_RATE] [-f FADE_LENGTH]\n",
+				                "[-r SAMPLING_RATE] [-f FADE_LENGTH] "
+				                "[-c VOLUME_CAP]\n",
 				        argv[0]);
 				exit(EXIT_FAILURE);
 		}

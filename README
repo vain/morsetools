@@ -6,7 +6,9 @@ Run as:
 
 To generate an OGG file:
 
-	$ echo 'Hello, world!' | ./t2m | oggenc -r -C 1 -q7 -o foo.ogg -
+	$ echo 'Hello, world!' | ./t2m -c 0.8 | oggenc -r -C 1 -o foo.ogg -
+
+	(Capping the volume reduces clipping in the encoded OGG file.)
 
 To morse interactively:
 
