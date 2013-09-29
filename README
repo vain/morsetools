@@ -1,0 +1,15 @@
+Converts text to morse (raw audio).
+
+Run as:
+
+	$ echo 'Hello, world!' | ./t2m | aplay -r 44100 -f S16_LE
+
+To generate an OGG file:
+
+	$ echo 'Hello, world!' | ./t2m | oggenc -r -C 1 -q7 -o foo.ogg -
+
+To morse interactively:
+
+	$ ( stty raw; stty isig; trap 'stty -raw' INT; ./t2m | aplay -r 44100 -f S16_LE >/dev/null 2>&1 )
+
+	(Quit using ^C.)

@@ -4,10 +4,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-/* Compile and run as:
- *   echo 'mkmmk mmkkmm mkm m k' | ./t2m | aplay -r 44100 -f S16_LE
- */
-
 #define LENGTH(X) (sizeof X / sizeof X[0])
 
 int wpm = 20;
