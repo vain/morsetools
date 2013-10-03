@@ -1,0 +1,136 @@
+#!/usr/bin/env python2.7
+# coding: utf-8
+
+import argparse
+import curses
+import random
+import subprocess
+
+def noerror(f, *args):
+    """Run a function but ignore curses.error. Yes, this is ugly."""
+    try:
+        f(*args)
+    except curses.error:
+        pass
+
+def setup_pipe(args):
+    """t2m translates ASCII to morse and aplay plays it."""
+    null = open('/dev/null', 'w')
+    p1 = subprocess.Popen(['t2m',
+                           '-f', str(args.freq),
+                           '-w', str(args.wpm),
+                           '-l'],
+                          stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                          stderr=subprocess.PIPE)
+    p2 = subprocess.Popen(['aplay', '-r', '44100', '-f', 'S16_LE'],
+                          stdin=p1.stdout, stdout=null, stderr=null)
+    return (p1.stdin, p1.stderr, [p1, p2])
+
+def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
+    """The game."""
+    chars_total = 0
+    chars_right = 0
+    chars_wrong = 0
+
+    noerror(curses.curs_set, False)
+    win.nodelay(1)
+
+    curses.start_color()
+    curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+    curses.init_pair(3, curses.COLOR_GREEN, curses.COLOR_BLACK)
+
+    win.erase()
+    win.refresh()
+
+    while True:
+        # Flush input now, then send the character, wait until it's been
+        # sent and then read one character from the keyboard.
+        curses.flushinp()
+
+        # Buzz.
+        character = random.choice(alphabet)
+        buzzer_pipe.write(character)
+        buzzer_pipe.flush()
+
+        # t2m tells us exactly how long this sequence was.
+        buzzing_len = int(float(len_pipe.readline().strip()) * 1000)
+        curses.napms(buzzing_len + int(buzzing_len * args.grace))
+
+        # Get input.
+        pressed = win.getch()
+        if pressed == ord('Q'):
+            return (chars_right, chars_wrong, chars_total)
+
+        # Refresh window properties.
+        win.erase()
+        (height, width) = win.getmaxyx()
+        center_x = int(width * 0.5 - 1)
+        center_y = int(height * 0.5 - 1)
+
+        # Immediate feedback for learning.
+        chars_total += 1
+        if pressed == ord(character):
+            chars_right += 1
+        else:
+            chars_wrong += 1
+            noerror(win.addstr, center_y, center_x, character,
+                    curses.color_pair(1))
+
+        # Update score.
+        scoreline = '{}+ {}- ({:.2f}%)'.format(chars_right, chars_wrong,
+                                               float(chars_right) /
+                                               chars_total * 100)
+        if chars_right >= args.number:
+            score_color = curses.color_pair(3)
+        elif chars_total >= args.number:
+            score_color = curses.color_pair(2)
+        else:
+            score_color = curses.A_NORMAL
+        noerror(win.addstr, 0, center_x - len(scoreline) / 2, scoreline,
+                score_color)
+
+        # Hint line.
+        hintline = 'Press Q to quit'
+        noerror(win.addstr, height - 1, center_x - len(hintline) / 2, hintline)
+
+        win.refresh()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--wpm', default=20, type=int,
+                        help='words per minute')
+    parser.add_argument('-f', '--freq', default=900, type=int,
+                        help='frequency of the buzzer')
+    parser.add_argument('-g', '--grace', default=1.25, type=float,
+                        help='extra percentage to wait after a character')
+    parser.add_argument('-l', '--level', default=2, type=int,
+                        help='minimum number of characters to send')
+    parser.add_argument('-n', '--number', default=1000, type=int,
+                        help='minimum number of characters to send')
+    args = parser.parse_args()
+
+    (buzzer_pipe, len_pipe, buzzer_procs) = setup_pipe(args)
+
+    # Alphabet taken from KochMorse:
+    # https://code.google.com/p/kochmorse/source/browse/trunk/KochMorse/alsamorse/koch.py#5
+    alphabet = list('kmrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x')
+    alphabet = alphabet[:args.level]
+
+    try:
+        score = curses.wrapper(mainloop, buzzer_pipe, len_pipe, alphabet, args)
+    except KeyboardInterrupt:
+        score = (0, 0, 0)
+
+    for p in buzzer_procs:
+        p.kill()
+
+    (chars_right, chars_wrong, chars_total) = score
+    if chars_total != 0:
+        print 'Final score:'
+        print '  Right: {} ({:.2f}%)'.format(chars_right, float(chars_right) /
+                                                          chars_total * 100)
+        print '  Wrong: {}'.format(chars_wrong)
+        print '  Total: {}'.format(chars_total)
+    else:
+        print 'Aborted.'
