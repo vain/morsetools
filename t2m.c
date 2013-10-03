@@ -11,6 +11,7 @@ int hz = 1500;
 int sampling_rate = 44100;
 double fade_length = 0.001;
 double volume_cap = 1;
+char print_lengths = 0;
 
 struct mapping
 {
@@ -94,7 +95,7 @@ translate(int c)
 	return "    ";
 }
 
-void
+double
 raw_sine(int dits, double amp)
 {
 	size_t i, num_samples;
@@ -123,29 +124,36 @@ raw_sine(int dits, double amp)
 		printf("%c", ival & 0xFF);
 		printf("%c", (ival >> 8) & 0xFF);
 	}
+
+	return dits * len_dit;
 }
 
 void
 beep(char *str)
 {
 	char *p;
+	double total_len = 0;
 	for (p = str; *p; p++)
 	{
 		switch (*p)
 		{
 			case '.':
-				raw_sine(1, 1);
+				total_len += raw_sine(1, 1);
 				break;
 
 			case '-':
-				raw_sine(3, 1);
+				total_len += raw_sine(3, 1);
 				break;
 
 			case ' ':
-				raw_sine(1, 0);
+				total_len += raw_sine(1, 0);
 				break;
 		}
 	}
+
+	/* Debug output, useful for other programs. */
+	if (print_lengths)
+		fprintf(stderr, "%lf\n", total_len);
 }
 
 int
@@ -153,7 +161,7 @@ main(int argc, char **argv)
 {
 	int c, opt;
 
-	while ((opt = getopt(argc, argv, "w:h:r:f:c:")) != -1)
+	while ((opt = getopt(argc, argv, "w:h:r:f:c:l")) != -1)
 	{
 		switch (opt)
 		{
@@ -171,6 +179,9 @@ main(int argc, char **argv)
 				break;
 			case 'c':
 				volume_cap = atof(optarg);
+				break;
+			case 'l':
+				print_lengths = 1;
 				break;
 			default: /* '?' */
 				fprintf(stderr, "Usage: %s [-w WPM] [-h HZ] "
