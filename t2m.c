@@ -161,20 +161,20 @@ main(int argc, char **argv)
 {
 	int c, opt;
 
-	while ((opt = getopt(argc, argv, "w:h:r:f:c:l")) != -1)
+	while ((opt = getopt(argc, argv, "w:f:r:F:c:l")) != -1)
 	{
 		switch (opt)
 		{
 			case 'w':
 				wpm = atoi(optarg);
 				break;
-			case 'h':
+			case 'f':
 				hz = atoi(optarg);
 				break;
 			case 'r':
 				sampling_rate = atoi(optarg);
 				break;
-			case 'f':
+			case 'F':
 				fade_length = atof(optarg);
 				break;
 			case 'c':
