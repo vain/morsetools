@@ -64,6 +64,16 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
         if pressed == ord('Q'):
             return (chars_right, chars_wrong, chars_total)
 
+        # Pause?
+        if pressed == ord('P'):
+            hintline = '---> PAUSED <---'
+            noerror(win.addstr, height - 1, center_x - len(hintline) / 2,
+                    hintline)
+            win.refresh()
+            win.nodelay(0)
+            win.getch()
+            win.nodelay(1)
+
         # Refresh window properties.
         win.erase()
         (height, width) = win.getmaxyx()
