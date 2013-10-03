@@ -43,6 +43,8 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
     win.erase()
     win.refresh()
 
+    history = []
+
     while True:
         # Flush input now, then send the character, wait until it's been
         # sent and then read one character from the keyboard.
@@ -72,10 +74,13 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
         chars_total += 1
         if pressed == ord(character):
             chars_right += 1
+            history.insert(0, (True, character))
         else:
             chars_wrong += 1
             noerror(win.addstr, center_y, center_x, character,
                     curses.color_pair(1))
+            history.insert(0, (False, character))
+        history = history[:512]
 
         # Update score.
         scoreline = '{}+ {}- ({:.2f}%)'.format(chars_right, chars_wrong,
@@ -89,6 +94,20 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
             score_color = curses.A_NORMAL
         noerror(win.addstr, 0, center_x - len(scoreline) / 2, scoreline,
                 score_color)
+
+        # History.
+        i = 0
+        for y in [height - 2, height - 3]:
+            for x in range(width - 1, 0, -1):
+                if i >= len(history):
+                    break
+                (success, c) = history[i]
+                i += 1
+                if success:
+                    color = curses.color_pair(3)
+                else:
+                    color = curses.color_pair(1)
+                noerror(win.addstr, y, x, c, color)
 
         # Hint line.
         hintline = 'Press Q to quit'
