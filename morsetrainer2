@@ -1,0 +1,94 @@
+#!/usr/bin/env python2.7
+
+import argparse
+import random
+import subprocess
+
+def blockout(a):
+    spaces = sorted(random.sample(range(1, len(a)), int(0.3 * len(a))))
+    offset = 0
+    a = list(a)
+    for i in spaces:
+        a.insert(i + offset, ' ')
+        offset += 1
+    return ''.join(a)
+
+def diff(correct, given):
+    outstr = ''
+
+    for i in range(len(correct)):
+        if i >= len(given) or correct[i] != given[i]:
+            outstr += correct[i]
+        else:
+            outstr += ' '
+    if len(given) > len(correct):
+        outstr += '~' * (len(given) - len(correct))
+
+    outstr += '\n'
+
+    for i in range(len(given)):
+        if i >= len(correct) or correct[i] != given[i]:
+            outstr += '\033[30;41m'
+            outstr += given[i]
+            outstr += '\033[0m'
+        else:
+            outstr += given[i]
+    if len(correct) > len(given):
+        outstr += '\033[30;41m'
+        outstr += ' ' * (len(correct) - len(given))
+        outstr += '\033[0m'
+
+    return outstr
+
+def setup_pipe(args):
+    """t2m translates ASCII to morse and aplay plays it."""
+    null = open('/dev/null', 'w')
+    p1 = subprocess.Popen(['t2m',
+                           '-f', str(args.freq),
+                           '-w', str(args.wpm)],
+                          stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p2 = subprocess.Popen(['aplay', '-r', '44100', '-f', 'S16_LE'],
+                          stdin=p1.stdout, stdout=null, stderr=null)
+    return (p1.stdin, [p1, p2])
+
+def mainloop(args, buzzer_pipe):
+    # Alphabet taken from KochMorse:
+    # https://code.google.com/p/kochmorse/source/browse/trunk/KochMorse/alsamorse/koch.py#5
+    alphabet = list('kmrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x')
+    alphabet = alphabet[:args.level]
+
+    while True:
+        answer = raw_input('Go? Press a key.')
+
+        tosend = ''
+        for i in range(args.line_length):
+            tosend += random.choice(alphabet)
+        tosend = blockout(tosend)
+        buzzer_pipe.write(tosend)
+        answer = raw_input('> ')
+        if answer == '':
+            break
+        print diff(tosend, answer)
+        print ''
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--wpm', default=20, type=int,
+                        help='words per minute')
+    parser.add_argument('-f', '--freq', default=900, type=int,
+                        help='frequency of the buzzer')
+    parser.add_argument('-l', '--level', default=2, type=int,
+                        help='number of different characters to send')
+    parser.add_argument('-L', '--line-length', default=10, type=int,
+                        help='number of characters per line')
+    args = parser.parse_args()
+
+    (buzzer_pipe, buzzer_procs) = setup_pipe(args)
+
+    try:
+        mainloop(args, buzzer_pipe)
+    except Exception, e:
+        print e
+
+    for p in buzzer_procs:
+        p.kill()

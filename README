@@ -37,3 +37,15 @@ really comfortable, try to reduce the "grace time": "-g 1.25" is default
 which waits for 125% of a character's length after it has been sent. In
 reality, there is no grace time ("-g 0"). You can also increase the
 number of words per minute. Default is "-w 20".
+
+
+morsetrainer2
+-------------
+
+A learning program for intermediates. "morsetrainer" is meant to teach
+you single characters. In time, though, you want to learn to understand
+words and sentences. This is where "morsetrainer2" comes in: A series of
+characters separated by spaces is sent and you have to write them all
+down. This is not an interactive process: You can write them down by
+hand and, after the transmission is over, then enter them into your
+computer.
