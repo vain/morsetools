@@ -134,7 +134,7 @@ if __name__ == '__main__':
     parser.add_argument('-g', '--grace', default=1.25, type=float,
                         help='extra percentage to wait after a character')
     parser.add_argument('-l', '--level', default=2, type=int,
-                        help='minimum number of characters to send')
+                        help='number of different characters to send')
     parser.add_argument('-n', '--number', default=1000, type=int,
                         help='minimum number of characters to send')
     args = parser.parse_args()
