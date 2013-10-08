@@ -52,22 +52,33 @@ def setup_pipe(args):
     return (p1.stdin, [p1, p2])
 
 def mainloop(args, buzzer_pipe):
+    print 'Abort any time with Ctrl-C.'
+    print 'Resend last transmission by entering an empty string.'
+    print ''
+
     # Alphabet taken from KochMorse:
     # https://code.google.com/p/kochmorse/source/browse/trunk/KochMorse/alsamorse/koch.py#5
     alphabet = list('kmrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x')
     alphabet = alphabet[:args.level]
 
     while True:
-        answer = raw_input('Go? Press a key.')
+        try:
+            answer = raw_input('Start transmission? Press a key.')
+        except KeyboardInterrupt:
+            return
 
         tosend = ''
         for i in range(args.line_length):
             tosend += random.choice(alphabet)
         tosend = blockout(tosend)
-        buzzer_pipe.write(tosend)
-        answer = raw_input('> ')
-        if answer == '':
-            break
+
+        answer = ''
+        while answer == '':
+            buzzer_pipe.write(tosend)
+            try:
+                answer = raw_input('> ')
+            except KeyboardInterrupt:
+                return
         print diff(tosend, answer)
         print ''
 
@@ -85,10 +96,7 @@ if __name__ == '__main__':
 
     (buzzer_pipe, buzzer_procs) = setup_pipe(args)
 
-    try:
-        mainloop(args, buzzer_pipe)
-    except Exception, e:
-        print e
+    mainloop(args, buzzer_pipe)
 
     for p in buzzer_procs:
         p.kill()
