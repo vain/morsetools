@@ -80,6 +80,12 @@ def mainloop(args, buzzer_pipe):
                 answer = raw_input('> ')
             except KeyboardInterrupt:
                 return
+
+        print 'Retransmitting "{}"...'.format(tosend)
+        print ''
+        buzzer_pipe.write('     ')
+        buzzer_pipe.write(tosend)
+
         print diff(tosend, answer)
         print ''
 
