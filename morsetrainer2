@@ -74,6 +74,7 @@ def mainloop(args, buzzer_pipe):
 
         answer = ''
         while answer == '':
+            buzzer_pipe.write('cq cq cq ')
             buzzer_pipe.write(tosend)
             try:
                 answer = raw_input('> ')
@@ -84,6 +85,8 @@ def mainloop(args, buzzer_pipe):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--cq', default=True, type=bool,
+                        help='prefix transmissions with a CQ sequence')
     parser.add_argument('-w', '--wpm', default=20, type=int,
                         help='words per minute')
     parser.add_argument('-f', '--freq', default=900, type=int,
