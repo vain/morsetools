@@ -63,7 +63,7 @@ def mainloop(args, buzzer_pipe):
 
     while True:
         try:
-            answer = raw_input('Start transmission? Press a key.')
+            answer = raw_input('Start transmission? Press enter.')
         except KeyboardInterrupt:
             return
 
