@@ -50,5 +50,5 @@ down. This is not an interactive process: You can write them down by
 hand and, after the transmission is over, then enter them into your
 computer.
 
-By default, "morsetrainer2" sends a "CQ CQ CQ" before the actual
+If you want to, "morsetrainer2" sends a "CQ CQ CQ" before the actual
 transmission starts. This is meant to help you picking up the rhythm.
