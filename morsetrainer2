@@ -61,6 +61,13 @@ def mainloop(args, buzzer_pipe):
     alphabet = list('kmrsuaptlowi.njef0yv,g5/q9zh38b?427c1d6x')
     alphabet = alphabet[:args.level]
 
+    if args.prefer_new_chars:
+        b = []
+        for i in range(len(alphabet)):
+            part = float(i) / (len(alphabet) - 1) * 9 + 1
+            b += [letter for letter in list(alphabet[i] * int(part))]
+        alphabet = b
+
     while True:
         try:
             answer = raw_input('Start transmission? Press enter.')
@@ -103,6 +110,9 @@ if __name__ == '__main__':
                         help='number of different characters to send')
     parser.add_argument('-L', '--line-length', default=10, type=int,
                         help='number of characters per line')
+    parser.add_argument('-n', '--prefer_new_chars', default=False,
+                        action='store_true',
+                        help='prefer characters of higher levels')
     args = parser.parse_args()
 
     (buzzer_pipe, buzzer_procs) = setup_pipe(args)
