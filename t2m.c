@@ -7,7 +7,7 @@
 #define LENGTH(X) (sizeof X / sizeof X[0])
 
 int wpm = 20;
-int hz = 1500;
+int hz = 900;
 int sampling_rate = 44100;
 double fade_length = 0.001;
 double volume_cap = 1;
