@@ -5,7 +5,7 @@ trap exit INT
 
 while read -r
 do
-    echo "$REPLY"
-    echo " $REPLY" | t2m "$@" | aplay -q -r 44100 -f S16_LE
+	echo "$REPLY"
+	echo " $REPLY" | t2m "$@" | aplay -q -r 44100 -f S16_LE
 	#     ^--- Hackaround for power saving crap of some soundcards.
 done
