@@ -6,4 +6,4 @@ shift
 l=$(wc -l <"$p")
 s=$((RANDOM % l))
 sed -n "$s,$((s + 30)) {s/./\\L&/g;s/ä/ae/g;s/ö/oe/g;s/ü/ue/g;s/ß/ss/g;p}" "$p" |
-linewise_morse "$@"
+	morsetrainer_linewise "$@"

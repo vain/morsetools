@@ -55,13 +55,13 @@ If you want to, "morsetrainer2" sends a "CQ CQ CQ" before the actual
 transmission starts. This is meant to help you picking up the rhythm.
 
 
-linewise_morse
---------------
+morsetrainer_linewise*
+----------------------
 
 Sooner or later, you will want to listen to longer sequences that
 actually make sense. This script reads a line from STDIN and sends it in
 Morse. The line will also be echoed on the terminal.
 
-For reading a random part of a german text, the "random_german_linewise"
-was added. It automatically selects 30 lines of the text and translates
-german umlauts into ASCII.
+For reading a random part of a german text, the script
+"morsetrainer_linewise_german" was added. It automatically selects 30
+lines of the text and translates german umlauts into ASCII.
