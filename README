@@ -5,19 +5,20 @@ Converts text to morse (raw audio).
 
 Run as:
 
-	$ echo 'Hello, world!' | ./t2m | aplay -r 44100 -f S16_LE
+    $ echo 'Hello, world!' | ./t2m | aplay -r 44100 -f S16_LE
 
 To generate an OGG file:
 
-	$ echo 'Hello, world!' | ./t2m -c 0.8 | oggenc -r -C 1 -o foo.ogg -
+    $ echo 'Hello, world!' | ./t2m -c 0.8 | oggenc -r -C 1 -o foo.ogg -
 
-	(Capping the volume reduces clipping in the encoded OGG file.)
+    (Capping the volume reduces clipping in the encoded OGG file.)
 
 To morse interactively:
 
-	$ ( stty raw; stty isig; trap 'stty -raw' INT; ./t2m | aplay -r 44100 -f S16_LE >/dev/null 2>&1 )
+    $ ( stty raw; stty isig; trap 'stty -raw' INT; ./t2m |
+        aplay -r 44100 -f S16_LE >/dev/null 2>&1 )
 
-	(Quit using ^C.)
+    (Quit using ^C.)
 
 
 morsetrainer
@@ -28,8 +29,8 @@ sound and ncurses for its user interface. It's best to run it in a
 terminal with a big font. The following command also extends $PATH in
 case you don't want to install the programs:
 
-	$ xterm -fa 'DejaVu Sans Mono:pixelsize=46' \
-		-e bash -c 'PATH=$PATH:~/work/C/morsetools morsetrainer -l 6; read'
+    $ xterm -fa 'DejaVu Sans Mono:pixelsize=46' \
+        -e bash -c 'PATH=$PATH:~/work/C/morsetools morsetrainer -l 6; read'
 
 This starts the tool in level 6, i.e. 6 different characters. If you're
 feeling comfortable, try to increase the level by one. If you're feeling
