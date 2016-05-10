@@ -70,7 +70,8 @@ lines of the text and translates german umlauts into ASCII.
 listen_and_repeat
 -----------------
 
-This script uses espeak to *say* a letter, followed by morse code.
+This script sends one letter in Morse code, followed by a spoken version
+(using espeak).
 
 This is an experimental learning method. Maybe it's better for people
 who don't like mixed stimuli: Traditional methods require you to process

@@ -28,7 +28,8 @@ if __name__ == '__main__':
     while True:
         c = choice(ascii_letters + digits)
         for i in range(2):
-            say(c)
             morse(c)
+            sleep(1)
+            say(c)
             sleep(1)
         sleep(2)
