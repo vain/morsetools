@@ -35,7 +35,7 @@ phonetic_alphabet = {
 }
 
 def morse(c):
-    t2m = Popen(['t2m', '-c', '0.9'], stdin=PIPE, stdout=PIPE)
+    t2m = Popen(['t2m', '-c', '0.5'], stdin=PIPE, stdout=PIPE)
     aplay = Popen(['aplay', '-r', '44100', '-f', 'S16_LE'],
                   stdin=t2m.stdout, stderr=DEVNULL)
 
