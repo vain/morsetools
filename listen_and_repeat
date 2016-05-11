@@ -35,17 +35,11 @@ phonetic_alphabet = {
 }
 
 def morse(c):
-    t2m = Popen(['t2m', '-c', '0.5'], stdin=PIPE, stdout=PIPE)
-    aplay = Popen(['aplay', '-r', '44100', '-f', 'S16_LE'],
-                  stdin=t2m.stdout, stderr=DEVNULL)
-
     # Like morsetrainer_linewise, this extra space is a hackaround for
     # power saving modes of some soundcards.
-    t2m.stdin.write((' ' + c).encode())
-
-    t2m.stdin.flush()
-    t2m.stdin.close()
-    aplay.wait()
+    cmd = 'echo " {}" | t2m -c 0.5 | aplay -qr 44100 -f S16_LE'.format(c)
+    player = Popen(cmd, shell=True)
+    player.communicate()
 
 def say(c):
     espeak = Popen(['espeak', '-s', '120'], stdin=PIPE, stderr=DEVNULL)
