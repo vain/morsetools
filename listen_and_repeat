@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from random import choice
+from pipes import quote
 from string import ascii_lowercase, digits
 from subprocess import DEVNULL, PIPE, Popen
 from time import sleep
@@ -32,12 +33,30 @@ phonetic_alphabet = {
     'x': 'X-ray',
     'y': 'Yankee',
     'z': 'Zulu',
+    #'.': 'Full stop',       # espeak builtins
+    ',': 'Comma',
+    #':': 'Colon',
+    '?': 'Question mark',
+    '\'': 'Apostrophe',
+    '-': 'Hyphen',
+    #'/': 'Fraction bar',
+    '(': 'Left-hand bracket',
+    ')': 'Right-hand bracket',
+    '"': 'Quotation mark',
+    #'=': 'Double hyphen',
+    #'+': 'Addition sign',
+    #'@': 'Commercial at',
+    ';': 'Semicolon',
+    '_': 'Underscore',
 }
+
+charpool = list(ascii_lowercase) + list(digits) + ['.', ',', ':', '?',
+        '\'', '-', '/', '(', ')', '"', '=', '+', '@', ';', '_']
 
 def morse(c):
     # Like morsetrainer_linewise, this extra space is a hackaround for
     # power saving modes of some soundcards.
-    cmd = 'echo " {}" | t2m -c 0.5 | aplay -qr 44100 -f S16_LE'.format(c)
+    cmd = 'echo " "{} | t2m -c 0.5 | aplay -qr 44100 -f S16_LE'.format(quote(c))
     player = Popen(cmd, shell=True)
     player.communicate()
 
@@ -53,7 +72,7 @@ def say(c):
 
 if __name__ == '__main__':
     while True:
-        c = choice(ascii_lowercase + digits)
+        c = choice(charpool)
         for i in range(2):
             morse(c)
             sleep(1)
