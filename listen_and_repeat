@@ -71,16 +71,19 @@ def say(s, is_line=False):
     if is_line:
         espeak.stdin.write(s.encode())
     else:
-        espeak.stdin.write(
-            '{}, {}.'.format(
-                s.upper(), phonetic_alphabet.get(s, '')
-            ).encode()
-        )
+        for i in s:
+            espeak.stdin.write(
+                '{}, {}. '.format(
+                    i.upper(), phonetic_alphabet.get(i, '')
+                ).encode()
+            )
+
     espeak.communicate()
 
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('-n', '--no-sleep', action='store_true')
+    parser.add_argument('-p', '--packs', type=int, default=1)
     parser.add_argument('-s', '--stdin', action='store_true')
     args = parser.parse_args()
 
@@ -90,7 +93,10 @@ if __name__ == '__main__':
             if not s:
                 break
         else:
-            s = choice(charpool)
+            s = ''
+            for i in range(args.packs):
+                s += choice(charpool)
+
         for i in range(2):
             morse(s)
             if not args.no_sleep:
