@@ -73,6 +73,9 @@ listen_and_repeat
 This script sends one letter in Morse code, followed by a spoken version
 (using espeak).
 
+If called with a "-" as first argument, it reads lines from stdin, sends
+them as morse, and then speaks them.
+
 This is an experimental learning method. Maybe it's better for people
 who don't like mixed stimuli: Traditional methods require you to process
 audible and visual stimuli, i.e. you have to listen to morse code and

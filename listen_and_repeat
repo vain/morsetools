@@ -4,6 +4,7 @@ from random import choice
 from pipes import quote
 from string import ascii_lowercase, digits
 from subprocess import DEVNULL, PIPE, Popen
+from sys import argv, stdin
 from time import sleep
 
 phonetic_alphabet = {
@@ -53,29 +54,39 @@ phonetic_alphabet = {
 charpool = list(ascii_lowercase) + list(digits) + ['.', ',', ':', '?',
         '\'', '-', '/', '(', ')', '"', '=', '+', '@', ';', '_']
 
-def morse(c):
+def morse(s):
     # Like morsetrainer_linewise, this extra space is a hackaround for
     # power saving modes of some soundcards.
-    cmd = 'echo " "{} | t2m -c 0.5 | aplay -qr 44100 -f S16_LE'.format(quote(c))
+    cmd = 'echo " "{} | t2m -c 0.5 | aplay -qr 44100 -f S16_LE'.format(quote(s))
     player = Popen(cmd, shell=True)
     player.communicate()
 
-def say(c):
+def say(s, is_line=False):
     espeak = Popen(['espeak', '-s', '120'], stdin=PIPE, stderr=DEVNULL)
 
-    espeak.stdin.write(
-        '{}, {}.'.format(
-            c.upper(), phonetic_alphabet.get(c, '')
-        ).encode()
-    )
+    if is_line:
+        espeak.stdin.write(s.encode())
+    else:
+        espeak.stdin.write(
+            '{}, {}.'.format(
+                s.upper(), phonetic_alphabet.get(s, '')
+            ).encode()
+        )
     espeak.communicate()
 
 if __name__ == '__main__':
+    read_lines = len(argv) == 2 and argv[1] == '-'
+
     while True:
-        c = choice(charpool)
+        if read_lines:
+            s = stdin.readline().strip()
+            if not s:
+                break
+        else:
+            s = choice(charpool)
         for i in range(2):
-            morse(c)
+            morse(s)
             sleep(1)
-            say(c)
+            say(s, is_line=read_lines)
             sleep(1)
         sleep(2)
