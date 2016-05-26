@@ -81,3 +81,8 @@ who don't like mixed stimuli: Traditional methods require you to process
 audible and visual stimuli, i.e. you have to listen to morse code and
 read a letter or word. This script provides you only with audible
 stimuli.
+
+Note that you can specify espeak's voice by setting $ESPEAK_LANG. For
+example:
+
+    $ echo deutsch | (PATH=$PATH:. ESPEAK_LANG=de ./listen_and_repeat -)

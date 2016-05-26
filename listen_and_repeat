@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from random import choice
+from os import getenv
 from pipes import quote
 from string import ascii_lowercase, digits
 from subprocess import DEVNULL, PIPE, Popen
@@ -62,7 +63,9 @@ def morse(s):
     player.communicate()
 
 def say(s, is_line=False):
-    espeak = Popen(['espeak', '-s', '120'], stdin=PIPE, stderr=DEVNULL)
+    language = getenv('ESPEAK_LANG', 'en')
+    espeak = Popen(['espeak', '-s', '120', '-v', language],
+                   stdin=PIPE, stderr=DEVNULL)
 
     if is_line:
         espeak.stdin.write(s.encode())
