@@ -86,3 +86,11 @@ Note that you can specify espeak's voice by setting $ESPEAK_LANG. For
 example:
 
     $ echo deutsch | (PATH=$PATH:. ESPEAK_LANG=de ./listen_and_repeat -)
+
+If you install [0], you can do something like this:
+
+    $ shuf /usr/share/dict/words | (PATH=$PATH:. ./listen_and_repeat -)
+
+(On Arch Linux, this is the package "words".)
+
+[0]: ftp://ftp.gnu.org/gnu/aspell/dict/0index.html
