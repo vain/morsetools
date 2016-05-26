@@ -91,5 +91,6 @@ if __name__ == '__main__':
             morse(s)
             sleep(1)
             say(s, is_line=read_lines)
+            print(s)
             sleep(1)
         sleep(2)
