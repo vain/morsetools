@@ -82,6 +82,7 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('-n', '--no-sleep', action='store_true')
     parser.add_argument('-p', '--packs', type=int, default=1)
+    parser.add_argument('-r', '--repetitions', type=int, default=2)
     parser.add_argument('-s', '--stdin', action='store_true')
     args = parser.parse_args()
 
@@ -95,7 +96,7 @@ if __name__ == '__main__':
             for i in range(args.packs):
                 s += choice(charpool)
 
-        for i in range(2):
+        for i in range(args.repetitions):
             morse(s)
             if not args.no_sleep:
                 sleep(1)
