@@ -94,3 +94,15 @@ If you install [0], you can do something like this:
 (On Arch Linux, this is the package "words".)
 
 [0]: ftp://ftp.gnu.org/gnu/aspell/dict/0index.html
+
+
+x11key
+------
+
+Creates a simple, black X11 window. Move your mouse pointer into that
+window and press a mouse button. You'll hear a sine wave as long as the
+button is pressed.
+
+Thus, this is a simulator of a Morse key.
+
+Requires libao, aside from xlib and pthreads.
