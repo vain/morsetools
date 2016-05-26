@@ -73,8 +73,8 @@ listen_and_repeat
 This script sends one letter in Morse code, followed by a spoken version
 (using espeak).
 
-If called with a "-" as first argument, it reads lines from stdin, sends
-them as morse, and then speaks them.
+If called with a "-s" as first argument, it reads lines from stdin,
+sends them as morse, and then speaks them.
 
 This is an experimental learning method. Maybe it's better for people
 who don't like mixed stimuli: Traditional methods require you to process
@@ -85,11 +85,11 @@ stimuli.
 Note that you can specify espeak's voice by setting $ESPEAK_LANG. For
 example:
 
-    $ echo deutsch | (PATH=$PATH:. ESPEAK_LANG=de ./listen_and_repeat -)
+    $ echo deutsch | (PATH=$PATH:. ESPEAK_LANG=de ./listen_and_repeat -s)
 
 If you install [0], you can do something like this:
 
-    $ shuf /usr/share/dict/words | (PATH=$PATH:. ./listen_and_repeat -)
+    $ shuf /usr/share/dict/words | (PATH=$PATH:. ./listen_and_repeat -s)
 
 (On Arch Linux, this is the package "words".)
 
