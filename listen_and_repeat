@@ -56,10 +56,14 @@ phonetic_alphabet = {
 charpool = list(ascii_lowercase) + list(digits) + ['.', ',', ':', '?',
         '\'', '-', '/', '(', ')', '"', '=', '+', '@', ';', '_']
 
-def morse(s, f):
+def morse(s, f, w):
     # Like morsetrainer_linewise, this extra space is a hackaround for
     # power saving modes of some soundcards.
-    cmd = 'echo " "{} | t2m -c 0.5 -f {} | aplay -qr 44100 -f S16_LE'.format(quote(s), f)
+    cmd = 'echo " "{} | t2m -c 0.5 -f {} -w {} | aplay -qr 44100 -f S16_LE'.format(
+        quote(s),
+        f,
+        w,
+    )
     player = Popen(cmd, shell=True)
     player.communicate()
 
@@ -85,6 +89,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--packs', type=int, default=1)
     parser.add_argument('-r', '--repetitions', type=int, default=2)
     parser.add_argument('-s', '--stdin', action='store_true')
+    parser.add_argument('-w', '--wpm', type=int, default=20)
     args = parser.parse_args()
 
     while True:
@@ -98,7 +103,7 @@ if __name__ == '__main__':
                 s += choice(charpool)
 
         for i in range(args.repetitions):
-            morse(s, args.freq)
+            morse(s, args.freq, args.wpm)
             if not args.no_sleep:
                 sleep(1)
             say(s, is_line=args.stdin)
