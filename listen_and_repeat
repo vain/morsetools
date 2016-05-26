@@ -36,19 +36,19 @@ phonetic_alphabet = {
     'x': 'X-ray',
     'y': 'Yankee',
     'z': 'Zulu',
-    #'.': 'Full stop',       # espeak builtins
+    '.': 'Full stop',
     ',': 'Comma',
-    #':': 'Colon',
+    ':': 'Colon',
     '?': 'Question mark',
     '\'': 'Apostrophe',
     '-': 'Hyphen',
-    #'/': 'Fraction bar',
+    '/': 'Fraction bar',
     '(': 'Left-hand bracket',
     ')': 'Right-hand bracket',
     '"': 'Quotation mark',
-    #'=': 'Double hyphen',
-    #'+': 'Addition sign',
-    #'@': 'Commercial at',
+    '=': 'Double hyphen',
+    '+': 'Addition sign',
+    '@': 'Commercial at',
     ';': 'Semicolon',
     '_': 'Underscore',
 }
@@ -71,12 +71,10 @@ def say(s, is_line=False):
     if is_line:
         espeak.stdin.write(s.encode())
     else:
+        phonetic = []
         for i in s:
-            espeak.stdin.write(
-                '{}, {}. '.format(
-                    i.upper(), phonetic_alphabet.get(i, '')
-                ).encode()
-            )
+            phonetic.append(phonetic_alphabet.get(i, i))
+        espeak.stdin.write((', '.join(phonetic) + '.').encode())
 
     espeak.communicate()
 
