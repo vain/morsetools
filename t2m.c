@@ -9,7 +9,7 @@
 int wpm = 20;
 int hz = 900;
 int sampling_rate = 44100;
-double fade_length = 0.001;
+double fade_length = 0.004;
 double volume_cap = 1;
 char print_lengths = 0;
 
