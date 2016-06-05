@@ -53,8 +53,10 @@ phonetic_alphabet = {
     '_': 'Underscore',
 }
 
-charpool = list(ascii_lowercase) + list(digits) + ['.', ',', ':', '?',
-        '\'', '-', '/', '(', ')', '"', '=', '+', '@', ';', '_']
+charpool = []
+charpool += list(ascii_lowercase)
+charpool += list(digits) 
+charpool += ['.', ',', ':', '?', '\'', '-', '/', '(', ')', '"', '=', '+', '@', ';', '_']
 
 def morse(s, f, w):
     # Like morsetrainer_linewise, this extra space is a hackaround for
