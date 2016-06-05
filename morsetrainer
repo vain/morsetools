@@ -1,5 +1,4 @@
-#!/usr/bin/env python2.7
-# coding: utf-8
+#!/usr/bin/env python
 
 import argparse
 import curses
@@ -52,7 +51,7 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
 
         # Buzz.
         character = random.choice(alphabet)
-        buzzer_pipe.write(character)
+        buzzer_pipe.write(character.encode())
         buzzer_pipe.flush()
 
         # t2m tells us exactly how long this sequence was.
@@ -67,7 +66,7 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
         # Pause?
         if pressed == ord('P'):
             hintline = '---> PAUSED <---'
-            noerror(win.addstr, height - 1, center_x - len(hintline) / 2,
+            noerror(win.addstr, height - 1, int(center_x - len(hintline) / 2),
                     hintline)
             win.refresh()
             win.nodelay(0)
@@ -102,7 +101,7 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
             score_color = curses.color_pair(2)
         else:
             score_color = curses.A_NORMAL
-        noerror(win.addstr, 0, center_x - len(scoreline) / 2, scoreline,
+        noerror(win.addstr, 0, int(center_x - len(scoreline) / 2), scoreline,
                 score_color)
 
         # History.
@@ -121,7 +120,8 @@ def mainloop(win, buzzer_pipe, len_pipe, alphabet, args):
 
         # Hint line.
         hintline = 'Press Q to quit'
-        noerror(win.addstr, height - 1, center_x - len(hintline) / 2, hintline)
+        noerror(win.addstr, height - 1, int(center_x - len(hintline) / 2),
+                hintline)
 
         win.refresh()
 
@@ -156,10 +156,10 @@ if __name__ == '__main__':
 
     (chars_right, chars_wrong, chars_total) = score
     if chars_total != 0:
-        print 'Final score:'
-        print '  Right: {} ({:.2f}%)'.format(chars_right, float(chars_right) /
-                                                          chars_total * 100)
-        print '  Wrong: {}'.format(chars_wrong)
-        print '  Total: {}'.format(chars_total)
+        print('Final score:')
+        print('  Right: {} ({:.2f}%)'.format(chars_right, float(chars_right) /
+                                                          chars_total * 100))
+        print('  Wrong: {}'.format(chars_wrong))
+        print('  Total: {}'.format(chars_total))
     else:
-        print 'Aborted.'
+        print('Aborted.')

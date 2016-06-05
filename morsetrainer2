@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 
 import argparse
 import random
@@ -52,9 +52,9 @@ def setup_pipe(args):
     return (p1.stdin, [p1, p2])
 
 def mainloop(args, buzzer_pipe):
-    print 'Abort any time with Ctrl-C.'
-    print 'Resend last transmission by entering an empty string.'
-    print ''
+    print('Abort any time with Ctrl-C.')
+    print('Resend last transmission by entering an empty string.')
+    print('')
 
     # Alphabet taken from KochMorse:
     # https://code.google.com/p/kochmorse/source/browse/trunk/KochMorse/alsamorse/koch.py#5
@@ -70,7 +70,7 @@ def mainloop(args, buzzer_pipe):
 
     while True:
         try:
-            answer = raw_input('Start transmission? Press enter.')
+            answer = input('Start transmission? Press enter.')
         except KeyboardInterrupt:
             return
 
@@ -82,21 +82,23 @@ def mainloop(args, buzzer_pipe):
         answer = ''
         while answer == '':
             if args.cq:
-                buzzer_pipe.write('cq cq cq ')
-                print 'cq cq cq ...'
-            buzzer_pipe.write(tosend)
+                buzzer_pipe.write('cq cq cq '.encode())
+                print('cq cq cq ...')
+            buzzer_pipe.write(tosend.encode())
+            buzzer_pipe.flush()
             try:
-                answer = raw_input('> ')
+                answer = input('> ')
             except KeyboardInterrupt:
                 return
 
-        print 'Retransmitting "{}"...'.format(tosend)
-        print ''
-        buzzer_pipe.write('     ')
-        buzzer_pipe.write(tosend)
+        print('Retransmitting "{}"...'.format(tosend))
+        print('')
+        buzzer_pipe.write('     '.encode())
+        buzzer_pipe.write(tosend.encode())
+        buzzer_pipe.flush()
 
-        print diff(tosend, answer)
-        print ''
+        print(diff(tosend, answer))
+        print('')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
