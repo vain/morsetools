@@ -69,18 +69,15 @@ def morse(s, f, w):
     player = Popen(cmd, shell=True)
     player.communicate()
 
-def say(s, is_line=False):
+def say(s):
     language = getenv('ESPEAK_LANG', 'en')
     espeak = Popen(['espeak', '-s', '120', '-v', language],
                    stdin=PIPE, stderr=DEVNULL)
 
-    if is_line:
-        espeak.stdin.write(s.encode())
-    else:
-        phonetic = []
-        for i in s:
-            phonetic.append(phonetic_alphabet.get(i, i))
-        espeak.stdin.write((', '.join(phonetic) + '.').encode())
+    phonetic = []
+    for i in s:
+        phonetic.append(phonetic_alphabet.get(i, i))
+    espeak.stdin.write((', '.join(phonetic) + '.').encode())
 
     espeak.communicate()
 
@@ -108,7 +105,7 @@ if __name__ == '__main__':
             morse(s, args.freq, args.wpm)
             if not args.no_sleep:
                 sleep(1)
-            say(s, is_line=args.stdin)
+            say(s)
             print(s)
             if not args.no_sleep:
                 sleep(1)
