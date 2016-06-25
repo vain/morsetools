@@ -76,7 +76,7 @@ def say(s):
 
     phonetic = []
     for i in s:
-        phonetic.append(phonetic_alphabet.get(i, i))
+        phonetic.append(phonetic_alphabet.get(i.lower(), i))
     espeak.stdin.write((', '.join(phonetic) + '.').encode())
 
     espeak.communicate()
