@@ -100,9 +100,11 @@ x11key
 ------
 
 Creates a simple, black X11 window. Move your mouse pointer into that
-window and press a mouse button. You'll hear a sine wave as long as the
-button is pressed.
+window and press the left mouse button. You'll hear a single dit. If
+you keep the left mouse button pressed, a series of dits will be played.
+If you press the right mouse button (or any button other than the left
+one), a similar series of dahs will be played.
 
-Thus, this is a simulator of a Morse key.
+This is supposed to be a simulator of a dual-paddle Morse key.
 
-Requires libao, aside from xlib and pthreads.
+Requires libao, aside from xlib.
